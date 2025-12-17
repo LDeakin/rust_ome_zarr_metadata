@@ -17,8 +17,6 @@ mod displacements;
 pub use displacements::*;
 mod identity;
 pub use identity::*;
-mod inverse_of;
-pub use inverse_of::*;
 mod map_axis;
 pub use map_axis::*;
 mod rotation;
@@ -121,8 +119,6 @@ pub enum CoordinateTransformInner {
     Displacements(Displacements),
     /// Coordinate transformation
     Coordinates(Coordinates),
-    /// Inverse Of transformation
-    InverseOf(InverseOf),
     /// Bijection transformation
     Bijection(Bijection),
     /// by_dimension transformation
@@ -141,7 +137,6 @@ impl Validate for CoordinateTransformInner {
             CoordinateTransformInner::Sequence(t) => t.validate_inner(accum),
             CoordinateTransformInner::Displacements(t) => t.validate_inner(accum),
             CoordinateTransformInner::Coordinates(t) => t.validate_inner(accum),
-            CoordinateTransformInner::InverseOf(t) => t.validate_inner(accum),
             CoordinateTransformInner::Bijection(t) => t.validate_inner(accum),
             CoordinateTransformInner::ByDimension(t) => t.validate_inner(accum),
         }
@@ -184,7 +179,6 @@ impl TransformationType for CoordinateTransformInner {
             CoordinateTransformInner::Sequence(t) => t.invertible(),
             CoordinateTransformInner::Displacements(t) => t.invertible(),
             CoordinateTransformInner::Coordinates(t) => t.invertible(),
-            CoordinateTransformInner::InverseOf(t) => t.invertible(),
             CoordinateTransformInner::Bijection(t) => t.invertible(),
             CoordinateTransformInner::ByDimension(t) => t.invertible(),
         }
@@ -201,7 +195,6 @@ impl TransformationType for CoordinateTransformInner {
             CoordinateTransformInner::Sequence(t) => t.input_ndim(),
             CoordinateTransformInner::Displacements(t) => t.input_ndim(),
             CoordinateTransformInner::Coordinates(t) => t.input_ndim(),
-            CoordinateTransformInner::InverseOf(t) => t.input_ndim(),
             CoordinateTransformInner::Bijection(t) => t.input_ndim(),
             CoordinateTransformInner::ByDimension(t) => t.input_ndim(),
         }
@@ -218,7 +211,6 @@ impl TransformationType for CoordinateTransformInner {
             CoordinateTransformInner::Sequence(t) => t.output_ndim(),
             CoordinateTransformInner::Displacements(t) => t.output_ndim(),
             CoordinateTransformInner::Coordinates(t) => t.output_ndim(),
-            CoordinateTransformInner::InverseOf(t) => t.output_ndim(),
             CoordinateTransformInner::Bijection(t) => t.output_ndim(),
             CoordinateTransformInner::ByDimension(t) => t.output_ndim(),
         }
@@ -235,7 +227,6 @@ impl TransformationType for CoordinateTransformInner {
             CoordinateTransformInner::Sequence(t) => t.input_system(),
             CoordinateTransformInner::Displacements(t) => t.input_system(),
             CoordinateTransformInner::Coordinates(t) => t.input_system(),
-            CoordinateTransformInner::InverseOf(t) => t.input_system(),
             CoordinateTransformInner::Bijection(t) => t.input_system(),
             CoordinateTransformInner::ByDimension(t) => t.input_system(),
         }
@@ -252,7 +243,6 @@ impl TransformationType for CoordinateTransformInner {
             CoordinateTransformInner::Sequence(t) => t.output_system(),
             CoordinateTransformInner::Displacements(t) => t.output_system(),
             CoordinateTransformInner::Coordinates(t) => t.output_system(),
-            CoordinateTransformInner::InverseOf(t) => t.output_system(),
             CoordinateTransformInner::Bijection(t) => t.output_system(),
             CoordinateTransformInner::ByDimension(t) => t.output_system(),
         }
