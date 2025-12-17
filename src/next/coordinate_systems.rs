@@ -52,3 +52,11 @@ pub struct Axis {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit: Option<AxisUnit>,
 }
+
+impl Axis {
+    /// Whether this axis is discrete.
+    /// This checks for [AxisType::Array] axes, and so should be preferred over directly accessing [Axis::discrete].
+    pub fn is_discrete(&self) -> bool {
+        matches!(self.r#type, Some(AxisType::Array)) || self.discrete.unwrap_or(false)
+    }
+}
