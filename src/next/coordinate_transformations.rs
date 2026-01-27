@@ -56,17 +56,11 @@ impl TransformationType for CoordinateTransform {
     }
 
     fn input_system(&self) -> Option<&str> {
-        self.input.as_deref().or(match &self.inner {
-            CoordinateTransformInner::Bijection(bij) => bij.input_system(),
-            _ => None,
-        })
+        self.input.as_deref().or(self.inner.input_system())
     }
 
     fn output_system(&self) -> Option<&str> {
-        self.output.as_deref().or(match &self.inner {
-            CoordinateTransformInner::Bijection(bij) => bij.output_system(),
-            _ => None,
-        })
+        self.input.as_deref().or(self.inner.output_system())
     }
 }
 

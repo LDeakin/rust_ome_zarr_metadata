@@ -1,5 +1,8 @@
+use std::collections::BTreeSet;
+
 use crate::v0_4::AxisUnit;
 use serde::{Deserialize, Serialize};
+use validatrix::{Accumulator, Validate};
 
 /// A named set of axes representing a known space.
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -11,12 +14,34 @@ pub struct CoordinateSystem {
     pub axes: Vec<Axis>,
 }
 
+impl Validate for CoordinateSystem {
+    fn validate_inner(&self, accum: &mut validatrix::Accumulator) {
+        accum.with_key("axes", |a| valid_axes(a, &self.axes));
+    }
+}
+
+pub(crate) fn unique_axis_names(accum: &mut Accumulator, axes: &[Axis]) {
+    let mut names = BTreeSet::default();
+    for (idx, a) in axes.iter().enumerate() {
+        if !names.insert(a.name.as_str()) {
+            accum.with_keys(&[idx.into(), "name".into()], |ac| ac.add_failure(format!("duplicate axis name '{}'", a.name)));
+        }
+    }
+}
+
+pub(crate) fn valid_axes(accum: &mut Accumulator, axes: &[Axis]) {
+    accum.validate_iter(axes);
+    unique_axis_names(accum, axes);
+    // TODO: RFC-5 (coordinate transformations) might implicitly include RFC-3 (loosening dimensionality constraints).
+    // Here it's assumed we don't need to validate t?c?z?yx
+}
+
 /// [`Axis`] `type` metadata. Represents the type of an axis.
 #[non_exhaustive]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 #[serde(rename_all = "lowercase")]
 pub enum AxisType {
-    /// The `array` axis type.
+    /// The `array` axis type. Always discrete.
     Array,
     /// The `space` axis type.
     Space,
@@ -51,6 +76,14 @@ pub struct Axis {
     /// The optional physical unit of this dimension.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit: Option<AxisUnit>,
+}
+
+impl Validate for Axis {
+    fn validate_inner(&self, accum: &mut validatrix::Accumulator) {
+        if matches!(self.r#type, Some(AxisType::Array)) && matches!(self.discrete, Some(false)) {
+            accum.add_failure_at("discrete", "array axes must be discrete");
+        }
+    }
 }
 
 impl Axis {
