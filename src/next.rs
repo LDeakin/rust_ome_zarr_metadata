@@ -1,5 +1,5 @@
 pub use crate::v0_5 as prev;
-pub use prev::*;
+pub use prev::{Bioformats2Raw, MultiscaleImage, Labels, ImageLabel, Omero, Plate, Well};
 use serde::{Deserialize, Serialize};
 use validatrix::{Accumulator, Validate};
 mod coordinate_systems;
@@ -8,7 +8,7 @@ mod coordinate_transformations;
 pub use coordinate_transformations::*;
 mod scene;
 
-crate::constrained_version!(ConstrainedVersion, ">=0.6.dev0", "0.6.dev3");
+crate::constrained_version!(ConstrainedVersion, ">=0.6.dev0", "0.6.dev4");
 
 /// OME-Zarr "ome" fields.
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
