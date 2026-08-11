@@ -13,16 +13,17 @@ repository = "https://github.com/zarrs/ome_zarr_metadata"
 license = "MIT OR Apache-2.0"
 keywords = ["ome", "zarr", "ome-zarr", "ome-ngff", "ngff"]
 categories = ["parsing", "science", "science::bioinformatics"]
-exclude = [
-    "ome-zarr"
-]
+exclude = ["ome-zarr"]
 
 [dependencies]
 monostate = "1.0.2"
 paste = "1.0.15"
 pep440_rs = "0.7.3"
 serde = { version = "1.0.184", features = ["derive"] }
-serde_json = { version = "1.0.71", features = ["float_roundtrip", "preserve_order"] }
+serde_json = { version = "1.0.71", features = [
+    "float_roundtrip",
+    "preserve_order",
+] }
 thiserror = "2.0.16"
 validatrix = { version = "0.3.1", features = ["serde"] }
 clap = { version = "4.5.57", features = ["derive"], optional = true }
